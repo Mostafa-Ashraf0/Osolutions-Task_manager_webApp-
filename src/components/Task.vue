@@ -1,0 +1,64 @@
+<script setup>
+</script>
+
+<template>
+    <div class="task">
+        <div class="text">
+            <h3>Complete project proposal</h3>
+            <p>Write and review the Q4 project proposal</p>
+        </div>
+        <div class="info">
+            <div class="tags">
+                <span>category</span>
+                <span>completed</span>
+                <span>image</span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    .task{
+        padding: 12px 0;
+        background-color: white;
+        border: 1px solid #E6ECF0;
+        border-radius: 5px;
+        width: calc(33.33% - 10px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    }
+    .task .text{
+        border-bottom: 2px solid #E6ECF0;
+        padding: 0 12px;
+    }
+    .task h3,
+    .task p{
+        margin: 0 0 10px;
+        color: #1D2D35;
+        font-size: 15px;
+    }
+    .task h3{
+        font-weight: 700;
+    }
+    .task p{
+        font-weight: 400;
+    }
+    .task .info{
+        padding: 12px 12px 0;
+    }
+    .tags{
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 10px;
+    }
+    .tags span{
+        background-color: #0013FE;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    
+</style>
