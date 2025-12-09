@@ -1,6 +1,6 @@
 <script setup>
-    import { computed } from 'vue';
-import Task from './Task.vue';
+    import { computed,ref } from 'vue';
+    import Task from './Task.vue';
     import { UseTaskStore } from '@/stores/task';
     //data store
     const taskStore = UseTaskStore();
@@ -10,13 +10,31 @@ import Task from './Task.vue';
     const allCategories = computed(()=>{
         return taskStore.categories;
     })
-
+    const categoryFilter = ref("");
 </script>
 
 <template>
     <div class="main">
         <h2>Tasks List</h2>
-        <div class="taskList">
+        <select name="filter" v-model="categoryFilter">
+            <option value="">All</option>
+            <option v-for="c in taskStore.categories.value" :value="c.id">{{ c.name }}</option>
+        </select>
+        <span>{{ categoryFilter }}</span>
+        <div v-if="categoryFilter" class="taskList">
+            <Task v-for="(task, index) in allTasks.value.filter(t=>t.category_id === categoryFilter)" 
+            :key="task.id" 
+            :title="task.title"
+            :completed="task.completed"
+            :date="task.created_at"
+            :description="task.description"
+            :img="task.image_url"
+            :categoryColor="allCategories.value.find(c=>c.id === task.category_id).color"
+            :categoryName = "allCategories.value.find(c=>c.id === task.category_id).name"
+            :priority = "task.priority"
+            />
+        </div>
+        <div v-else class="taskList">
             <Task v-for="(task, index) in allTasks.value" 
             :key="task.id" 
             :title="task.title"
@@ -29,6 +47,7 @@ import Task from './Task.vue';
             :priority = "task.priority"
             />
         </div>
+
     </div>
 </template>
 

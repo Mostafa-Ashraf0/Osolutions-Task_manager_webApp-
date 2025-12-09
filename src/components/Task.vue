@@ -4,12 +4,12 @@
         description:String,
         completed:Boolean,
         img:String,
-        date:Date,
+        date:String,
         categoryColor: String,
         categoryName: String,
         priority: String
     })
-
+    const expandIcon = new URL('@/assets/images/expand.png', import.meta.url).href;
     const priorityImg = {
         high: new URL('@/assets/images/redIcon.png', import.meta.url).href,
         medium: new URL('@/assets/images/blueIcon.png', import.meta.url).href,
@@ -20,7 +20,12 @@
 <template>
     <div class="task">
         <div class="text">
-            <h3>{{ title }}</h3>
+            <div class="head">
+                <h3>{{ title }}</h3>
+                <div class="expandIcon">
+                    <img class="expand" :src="expandIcon" alt="img"></img>
+                </div>
+            </div>
             <p>{{ description }}</p>
         </div>
         <div class="info">
@@ -48,6 +53,28 @@
     }
     .task .text{
         padding: 0 12px;
+    }
+    .text .head{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .text .head .expandIcon{
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+    .text .head .expandIcon:hover{
+        background-color: rgba(128, 128, 128, 0.137);
+    }
+    .text .head .expand{
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
     }
     .task h3,
     .task p{
@@ -85,5 +112,6 @@
         width: 20px;
         height: 20px;
     }
-    
+
+
 </style>
