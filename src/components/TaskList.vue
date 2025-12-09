@@ -31,6 +31,7 @@
             :img="task.image_url"
             :categoryColor="allCategories.value.find(c=>c.id === task.category_id).color"
             :categoryName = "allCategories.value.find(c=>c.id === task.category_id).name"
+            :categoryIcon = "allCategories.value.find(c=>c.id === task.category_id).icon_url"
             :priority = "task.priority"
             />
         </div>
@@ -44,6 +45,7 @@
             :img="task.image_url"
             :categoryColor="allCategories.value.find(c=>c.id === task.category_id).color"
             :categoryName = "allCategories.value.find(c=>c.id === task.category_id).name"
+            :categoryIcon = "allCategories.value.find(c=>c.id === task.category_id).icon_url"
             :priority = "task.priority"
             />
         </div>

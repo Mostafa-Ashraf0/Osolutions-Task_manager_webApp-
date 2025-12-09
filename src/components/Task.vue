@@ -7,6 +7,7 @@
         date:String,
         categoryColor: String,
         categoryName: String,
+        categoryIcon: String,
         priority: String
     })
     const expandIcon = new URL('@/assets/images/expand.png', import.meta.url).href;
@@ -30,11 +31,16 @@
         </div>
         <div class="info">
             <div class="tags">
-                <span :style="{backgroundColor: categoryColor}">{{categoryName}}</span>
+                <span :style="{backgroundColor: categoryColor}">
+                    <img class="icon" :src="categoryIcon" alt="icon">
+                    {{categoryName}}
+                </span>
                 <span v-if="completed" style="background-color: #28a745;">completed</span>
                 <span v-if="!completed" style="background-color: #6c757d;">pending</span>
                 <img class="priorityIcon" :src="priorityImg[priority]" alt="img">
+                <img class="taskImg" alt="img" :src="img">
             </div>
+            
         </div>
     </div>
 </template>
@@ -106,6 +112,9 @@
         text-align: center;
         font-size: 15px;
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
 
     .priorityIcon{
@@ -113,5 +122,11 @@
         height: 20px;
     }
 
+    .taskImg{
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 
 </style>
