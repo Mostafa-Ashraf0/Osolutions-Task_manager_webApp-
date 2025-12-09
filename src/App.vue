@@ -1,7 +1,22 @@
 <script setup>
-    import { useCounterStore } from './stores/counter';
+    import { onMounted } from 'vue';
+    import { UseTaskStore } from './stores/task';
     import TaskList from './components/TaskList.vue';
-    const counter = useCounterStore();
+    import { getCategories } from './Api/getCategories';
+    import { getTasks } from './Api/getTasks';
+    //data store
+    const tasksStore = UseTaskStore();
+
+    onMounted(async() => {
+        const fetchedCategories = await getCategories();
+        const fetchedTasks = await getTasks();
+        //add fetched data in state
+        tasksStore.categories.value = fetchedCategories;
+        console.log(tasksStore.categories.value)
+        tasksStore.tasks.value = fetchedTasks;
+        console.log(tasksStore.tasks.value)
+    });
+
 </script>
     
 <template>

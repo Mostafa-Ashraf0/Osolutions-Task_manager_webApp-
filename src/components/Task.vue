@@ -1,17 +1,34 @@
 <script setup>
+    defineProps({
+        title: String,
+        description:String,
+        completed:Boolean,
+        img:String,
+        date:Date,
+        categoryColor: String,
+        categoryName: String,
+        priority: String
+    })
+
+    const priorityImg = {
+        high: new URL('@/assets/images/redIcon.png', import.meta.url).href,
+        medium: new URL('@/assets/images/blueIcon.png', import.meta.url).href,
+        low: new URL('@/assets/images/yellowIcon.png', import.meta.url).href
+    }
 </script>
 
 <template>
     <div class="task">
         <div class="text">
-            <h3>Complete project proposal</h3>
-            <p>Write and review the Q4 project proposal</p>
+            <h3>{{ title }}</h3>
+            <p>{{ description }}</p>
         </div>
         <div class="info">
             <div class="tags">
-                <span>category</span>
-                <span>completed</span>
-                <span>image</span>
+                <span :style="{backgroundColor: categoryColor}">{{categoryName}}</span>
+                <span v-if="completed" style="background-color: #28a745;">completed</span>
+                <span v-if="!completed" style="background-color: #6c757d;">pending</span>
+                <img class="priorityIcon" :src="priorityImg[priority]" alt="img">
             </div>
         </div>
     </div>
@@ -19,6 +36,9 @@
 
 <style scoped>
     .task{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         padding: 12px 0;
         background-color: white;
         border: 1px solid #E6ECF0;
@@ -27,7 +47,6 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
     }
     .task .text{
-        border-bottom: 2px solid #E6ECF0;
         padding: 0 12px;
     }
     .task h3,
@@ -43,6 +62,7 @@
         font-weight: 400;
     }
     .task .info{
+        border-top: 2px solid #E6ECF0;
         padding: 12px 12px 0;
     }
     .tags{
@@ -59,6 +79,11 @@
         text-align: center;
         font-size: 15px;
         font-weight: 500;
+    }
+
+    .priorityIcon{
+        width: 20px;
+        height: 20px;
     }
     
 </style>
