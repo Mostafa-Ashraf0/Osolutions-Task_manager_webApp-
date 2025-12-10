@@ -1,10 +1,16 @@
 <script setup>
     import { useEditForm } from '@/stores/editForm';
     import { useDetailsStore } from '@/stores/taskDetails';
+    import { UseTaskStore } from '@/stores/task';
     import { computed } from 'vue';
 
+    const taskStore = UseTaskStore();
     const editFormStore = useEditForm();
     const detailsStore = useDetailsStore();
+
+    const allCategories = computed(()=>{
+        return taskStore.categories;
+    })
     const taskData = computed(()=>{
         return editFormStore.editFormData;
     })
@@ -15,6 +21,39 @@
     const handleCancel = ()=>{
         detailsStore.display = !detailsStore.display;
         editFormStore.formDisplay = !editFormStore.formDisplay;
+    }
+    const handleSave = async()=>{
+        const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks?id=eq.${taskData.value.id}`
+        try{
+        const res = await fetch(baseUrl,{
+            method: 'PATCH',
+            headers:{
+                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer':'return=representation'
+            },
+            body: JSON.stringify({
+                title: taskData.value.title,
+                category_id: taskData.value.categoryId,
+                priority: taskData.value.priority,
+                description: taskData.value.description,
+                image_url: taskData.value.img
+            })
+            }
+            );
+            const data = await res.json();
+            console.log("updated",data)
+            const index = taskStore.tasks.findIndex(t => t.id === taskData.value.id);
+
+            editFormStore.formDisplay = !editFormStore.formDisplay;
+            return data;
+            
+        }catch(error){
+            alert(error);
+        }finally{
+            console.log("fetched")
+        }
     }
 </script>
 
@@ -30,11 +69,19 @@
             </div>
             <div class="inputGroup">
                 <label for="category">Category</label>
-                <input type="text" v-model="editFormStore.editFormData.categoryName" required>
+                <!--<input type="text" v-model="editFormStore.editFormData.categoryId" required>-->
+                <select name="category" v-model="editFormStore.editFormData.categoryId">
+                    <option v-for="c in allCategories.value" :value="c.id">{{ c.name }}</option>
+                </select>
             </div>
             <div class="inputGroup">
                 <label for="priority">Priority</label>
-                <input type="text" v-model="editFormStore.editFormData.priority">
+                <!--<input type="text" v-model="editFormStore.editFormData.priority">-->
+                <select name="priority" v-model="editFormStore.editFormData.priority">
+                    <option value="high">high</option>
+                    <option value="medium">medium</option>
+                    <option value="low">low</option>
+                </select>
             </div>
 
         </div>
@@ -48,7 +95,7 @@
                 <input type="text" v-model="editFormStore.editFormData.img">
             </div>
             <div class="btns">
-                <button class="save">Save</button>
+                <button class="save" @click="handleSave">Save</button>
                 <button class="cancel" @click="handleCancel">Cancel</button>
             </div>
         </div>

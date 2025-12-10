@@ -6,10 +6,12 @@
         completed:Boolean,
         img:String,
         date:String,
+        categoryId:Number,
         categoryColor: String,
         categoryName: String,
         categoryIcon: String,
-        priority: String
+        priority: String,
+        updated:Boolean
     })
 
     import { useDetailsStore } from '@/stores/taskDetails';
@@ -26,12 +28,15 @@
             description: props.description,
             completed: props.completed,
             img: props.img,
+            categoryId: props.categoryId,
             categoryColor: props.categoryColor,
             categoryName: props.categoryName,
             categoryIcon: props.categoryIcon,
-            priority: props.priority
+            priority: props.priority,
+            updated: props.updated
         }
         // store data in states
+        console.log(data)
         detailsStore.taskData = data;
         editFormStore.editFormData = data;
     }
