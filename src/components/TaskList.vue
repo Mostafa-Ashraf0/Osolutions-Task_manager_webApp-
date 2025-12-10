@@ -38,6 +38,7 @@
         <div v-else class="taskList">
             <Task v-for="(task, index) in allTasks.value" 
             :key="task.id" 
+            :id="task.id"
             :title="task.title"
             :completed="task.completed"
             :date="task.created_at"

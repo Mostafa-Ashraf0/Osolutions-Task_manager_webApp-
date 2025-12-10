@@ -1,14 +1,46 @@
 <script setup>
     import { useDetailsStore } from '@/stores/taskDetails';
+    import { UseTaskStore } from '@/stores/task';
     import { computed } from 'vue';
+    const taskStore = UseTaskStore();
     //selected task
     const detailsStore = useDetailsStore();
     const taskData = computed(()=>{
         return detailsStore.taskData;
     })
+    
     const closeIcon = new URL('@/assets/images/close.jpg', import.meta.url).href;
     const closePage = ()=>{
         detailsStore.display = !detailsStore.display
+    }
+    const toggleStatus = async()=>{
+        const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks?id=eq.${taskData.value.id}`
+        try{
+        const res = await fetch(baseUrl,{
+            method: 'PATCH',
+            headers:{
+                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer':'return=representation'
+            },
+            body: JSON.stringify({
+                completed: !taskData.value.completed
+            })
+            }
+            );
+            const data = await res.json();
+            console.log("updated",data)
+            detailsStore.taskData.completed = data[0].completed;
+            const mainTask = taskStore.tasks.value.find(t=>t.id === taskData.value.id)
+            mainTask.completed = data[0].completed;
+            return data;
+            
+        }catch(error){
+            alert(error);
+        }finally{
+            console.log("fetched")
+        }
     }
 </script>
 
@@ -27,13 +59,20 @@
                 <input type="text" :value="taskData?.categoryName" readonly>
             </div>
             <div class="inputGroup">
-                <label for="completed">Completed?</label>
-                <input type="text" :value="taskData?.completed" readonly>
-            </div>
-            <div class="inputGroup">
                 <label for="priority">Priority</label>
                 <input type="text" :value="taskData?.priority" readonly>
             </div>
+            <span v-if="taskData?.completed"
+             style="background-color: rgb(108, 117, 125);"
+             class="toggle"
+            @click="toggleStatus"
+             >change to pending</span>
+             <span v-else
+             style="background-color: rgb(40, 167, 69);"
+             class="toggle"
+            @click="toggleStatus"
+             >change to completed</span>
+
         </div>
         <div class="inputSection">
             <div class="inputGroup">
@@ -144,5 +183,15 @@
     }
     .btns .delete{
         background-color: #ef4444;
+    }
+    .toggle{
+        cursor: pointer;
+        width: 200px;
+        height: 30px;
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

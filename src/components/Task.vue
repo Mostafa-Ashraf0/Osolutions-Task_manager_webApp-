@@ -1,5 +1,6 @@
 <script setup>
     const props = defineProps({
+        id: Number,
         title: String,
         description:String,
         completed:Boolean,
@@ -18,6 +19,7 @@
     const detailsData = ()=>{
         detailsStore.display = !detailsStore.display
         const data = {
+            id: props.id,
             title: props.title,
             description: props.description,
             completed: props.completed,
@@ -79,6 +81,7 @@
     }
     .task .text{
         padding: 0 12px;
+        max-height: 100px;
     }
     .text .head{
         display: flex;
