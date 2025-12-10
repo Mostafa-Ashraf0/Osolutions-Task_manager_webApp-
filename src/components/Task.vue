@@ -13,8 +13,10 @@
     })
 
     import { useDetailsStore } from '@/stores/taskDetails';
+    import { useEditForm } from '@/stores/editForm';
     import { computed } from 'vue';
     const detailsStore = useDetailsStore();
+    const editFormStore = useEditForm();
 
     const detailsData = ()=>{
         detailsStore.display = !detailsStore.display
@@ -29,7 +31,9 @@
             categoryIcon: props.categoryIcon,
             priority: props.priority
         }
+        // store data in states
         detailsStore.taskData = data;
+        editFormStore.editFormData = data;
     }
     
     const expandIcon = new URL('@/assets/images/expand.png', import.meta.url).href;

@@ -5,6 +5,7 @@
     import DetailsPage from './components/DetailsPage.vue';
     import { getCategories } from './Api/getCategories';
     import { getTasks } from './Api/getTasks';
+    import EditForm from './components/EditForm.vue';
     //data store
     const tasksStore = UseTaskStore();
 
@@ -23,6 +24,7 @@
 <template>
     <TaskList/>
     <DetailsPage/>
+    <EditForm/>
 </template>
 
 <style>

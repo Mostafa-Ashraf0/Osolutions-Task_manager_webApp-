@@ -1,97 +1,55 @@
 <script setup>
-    import { useDetailsStore } from '@/stores/taskDetails';
-    import { UseTaskStore } from '@/stores/task';
-    import { computed } from 'vue';
     import { useEditForm } from '@/stores/editForm';
+    import { useDetailsStore } from '@/stores/taskDetails';
+    import { computed } from 'vue';
 
     const editFormStore = useEditForm();
-    const taskStore = UseTaskStore();
-    //selected task
     const detailsStore = useDetailsStore();
     const taskData = computed(()=>{
-        return detailsStore.taskData;
+        return editFormStore.editFormData;
     })
-    
     const closeIcon = new URL('@/assets/images/close.jpg', import.meta.url).href;
     const closePage = ()=>{
-        detailsStore.display = !detailsStore.display
+        editFormStore.formDisplay = !editFormStore.formDisplay
     }
-    const toggleStatus = async()=>{
-        const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks?id=eq.${taskData.value.id}`
-        try{
-        const res = await fetch(baseUrl,{
-            method: 'PATCH',
-            headers:{
-                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-                'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-                'Content-Type': 'application/json',
-                'Prefer':'return=representation'
-            },
-            body: JSON.stringify({
-                completed: !taskData.value.completed
-            })
-            }
-            );
-            const data = await res.json();
-            console.log("updated",data)
-            //edit completed state in details page
-            detailsStore.taskData.completed = data[0].completed;
-            //edit completed state in tasks list
-            const mainTask = taskStore.tasks.value.find(t=>t.id === taskData.value.id)
-            mainTask.completed = data[0].completed;
-            return data;
-            
-        }catch(error){
-            alert(error);
-        }finally{
-            console.log("fetched")
-        }
-    }
-    const handleEdit = ()=>{
+    const handleCancel = ()=>{
         detailsStore.display = !detailsStore.display;
         editFormStore.formDisplay = !editFormStore.formDisplay;
     }
 </script>
 
 <template>
-    <div class="detailsPage" :style="{display:detailsStore.display?'flex':'none'}">
+    <div class="detailsPage" :style="{display:editFormStore.formDisplay?'flex':'none'}">
         <div class="closeIcon" @click="closePage">
             <img class="close" :src="closeIcon" alt="icon"></img>
         </div>
-        <div class="inputSection">
+        <div v-if="taskData" class="inputSection">
             <div class="inputGroup">
                 <label for="title">Title</label>
-                <input type="text" :value="taskData?.title" readonly>
+                <input type="text" v-model="editFormStore.editFormData.title" required>
             </div>
             <div class="inputGroup">
                 <label for="category">Category</label>
-                <input type="text" :value="taskData?.categoryName" readonly>
+                <input type="text" v-model="editFormStore.editFormData.categoryName" required>
             </div>
             <div class="inputGroup">
                 <label for="priority">Priority</label>
-                <input type="text" :value="taskData?.priority" readonly>
+                <input type="text" v-model="editFormStore.editFormData.priority">
             </div>
-            <span v-if="taskData?.completed"
-             style="background-color: rgb(108, 117, 125);"
-             class="toggle"
-            @click="toggleStatus"
-             >change to pending</span>
-             <span v-else
-             style="background-color: rgb(40, 167, 69);"
-             class="toggle"
-            @click="toggleStatus"
-             >change to completed</span>
 
         </div>
-        <div class="inputSection">
+        <div v-if="taskData" class="inputSection">
             <div class="inputGroup">
                 <label for="description">Description</label>
-                <textarea name="description" :value="taskData?.description" readonly></textarea>
+                <textarea name="description" v-model="editFormStore.editFormData.description"></textarea>
             </div>
-            <img class="taskImg" :src="taskData?.img" alt="image">
+            <div class="inputGroup">
+                <label for="imgUrl">ImgUrl</label>
+                <input type="text" v-model="editFormStore.editFormData.img">
+            </div>
             <div class="btns">
-                <button class="edit" @click="handleEdit">Edit</button>
-                <button class="delete">Delete</button>
+                <button class="save">Save</button>
+                <button class="cancel" @click="handleCancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -187,20 +145,11 @@
         border: none;
         color: white;
     }
-    .btns .edit{
+    .btns .save{
         background-color: #1D2D35;
     }
-    .btns .delete{
+    .btns .cancel{
         background-color: #ef4444;
     }
-    .toggle{
-        cursor: pointer;
-        width: 200px;
-        height: 30px;
-        color: white;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    
 </style>
