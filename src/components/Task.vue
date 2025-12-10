@@ -1,5 +1,5 @@
 <script setup>
-    defineProps({
+    const props = defineProps({
         title: String,
         description:String,
         completed:Boolean,
@@ -10,6 +10,26 @@
         categoryIcon: String,
         priority: String
     })
+
+    import { useDetailsStore } from '@/stores/taskDetails';
+    import { computed } from 'vue';
+    const detailsStore = useDetailsStore();
+
+    const detailsData = ()=>{
+        detailsStore.display = !detailsStore.display
+        const data = {
+            title: props.title,
+            description: props.description,
+            completed: props.completed,
+            img: props.img,
+            categoryColor: props.categoryColor,
+            categoryName: props.categoryName,
+            categoryIcon: props.categoryIcon,
+            priority: props.priority
+        }
+        detailsStore.taskData = data;
+    }
+    
     const expandIcon = new URL('@/assets/images/expand.png', import.meta.url).href;
     const priorityImg = {
         high: new URL('@/assets/images/redIcon.png', import.meta.url).href,
@@ -23,7 +43,7 @@
         <div class="text">
             <div class="head">
                 <h3>{{ title }}</h3>
-                <div class="expandIcon">
+                <div class="expandIcon" @click="detailsData">
                     <img class="expand" :src="expandIcon" alt="img"></img>
                 </div>
             </div>
@@ -32,7 +52,7 @@
         <div class="info">
             <div class="tags">
                 <span :style="{backgroundColor: categoryColor}">
-                    <img class="icon" :src="categoryIcon" alt="icon">
+                    <img class="icon" :src="categoryIcon" alt="#">
                     {{categoryName}}
                 </span>
                 <span v-if="completed" style="background-color: #28a745;">completed</span>

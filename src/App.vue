@@ -2,6 +2,7 @@
     import { onMounted } from 'vue';
     import { UseTaskStore } from './stores/task';
     import TaskList from './components/TaskList.vue';
+    import DetailsPage from './components/DetailsPage.vue';
     import { getCategories } from './Api/getCategories';
     import { getTasks } from './Api/getTasks';
     //data store
@@ -21,6 +22,7 @@
     
 <template>
     <TaskList/>
+    <DetailsPage/>
 </template>
 
 <style>

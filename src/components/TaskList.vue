@@ -18,7 +18,7 @@
         <h2>Tasks List</h2>
         <select name="filter" v-model="categoryFilter">
             <option value="">All</option>
-            <option v-for="c in taskStore.categories.value" :value="c.id">{{ c.name }}</option>
+            <option v-for="c in allCategories.value" :value="c.id">{{ c.name }}</option>
         </select>
         <span>{{ categoryFilter }}</span>
         <div v-if="categoryFilter" class="taskList">
@@ -43,9 +43,9 @@
             :date="task.created_at"
             :description="task.description"
             :img="task.image_url"
-            :categoryColor="allCategories.value.find(c=>c.id === task.category_id).color"
-            :categoryName = "allCategories.value.find(c=>c.id === task.category_id).name"
-            :categoryIcon = "allCategories.value.find(c=>c.id === task.category_id).icon_url"
+            :categoryColor="allCategories.value.find(c=>c.id === task.category_id)?.color"
+            :categoryName = "allCategories.value.find(c=>c.id === task.category_id)?.name || 'none'"
+            :categoryIcon = "allCategories.value.find(c=>c.id === task.category_id)?.icon_url"
             :priority = "task.priority"
             />
         </div>
