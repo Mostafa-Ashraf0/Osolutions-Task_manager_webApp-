@@ -22,6 +22,7 @@ simple task manager created with vite + vue.js and Supabase
 - Other technologies you used
 
 ## State management
+```
 - task store: which contain 
 tasks=> stores tasks retreved from the database, 
 categories=> stores categories retreved from the database,
@@ -41,7 +42,7 @@ loading=> loading state during saving data
 editFormData=> input data from addition form.
 display=> boolean value that control add form visability
 loading=> loading state during saving data
-
+```
 ## Components Structure
 ```
     <APP>
@@ -63,7 +64,7 @@ git clone <your-repo-url>
 ```bash
 npm install
 ```
-3. **Create .env fil**
+3. **Create .env file**
 ```bash
 VITE_SUPABASE_PROJECT_ID=xxx
 VITE_SUPABASE_ANON_KEY=xxx
@@ -73,3 +74,8 @@ VITE_SUPABASE_ANON_KEY=xxx
 npm run dev
 ```
 
+## App Screenshots
+![home](./src/assets/images/home.PNG)
+![details](./src/assets/images/details.PNG)
+![edit](./src/assets/images/edit.PNG)
+![ass](./src/assets/images/add.PNG)
