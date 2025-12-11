@@ -22,7 +22,6 @@ const deleteTask = async(id)=>{
         }
         );
         const data = await res.json();
-        console.log("deleted",data)
         const fetchedTasks = await getTasks();
         taskStore.tasks.value = fetchedTasks;
         return data;

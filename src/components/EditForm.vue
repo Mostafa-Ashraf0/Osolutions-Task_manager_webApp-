@@ -47,7 +47,6 @@
             }
             );
             const data = await res.json();
-            console.log("updated",data)
             const fetchedTasks = await getTasks();
             taskStore.tasks.value = fetchedTasks;
             editFormStore.formDisplay = !editFormStore.formDisplay;
@@ -123,6 +122,7 @@
         padding: 30px;
         border-radius: 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        z-index: 1000;
     }
     .detailsPage .closeIcon{
         border-radius: 50%;
@@ -163,7 +163,8 @@
         font-weight: 500;
     }
     .inputSection .inputGroup input,
-    .inputSection .inputGroup textarea{
+    .inputSection .inputGroup textarea,
+    .inputSection .inputGroup select{
         padding: 10px;
         font-size: 15px;
         font-weight: 400;
@@ -172,8 +173,8 @@
         background-color: #E6ECF0;
         color: #1D2D35;
     }
-    .inputSection .inputGroup input{
-        height: 30px;
+    .inputSection .inputGroup input,
+    .inputSection .inputGroup select{
         width: 70%;
     }
     .inputSection .inputGroup textarea{
@@ -223,5 +224,27 @@
         width: 100px;
         height: 100px;
         border-radius: 10px;
+    }
+
+    @media (min-width: 770px) and (max-width: 992px) {
+        .inputSection .inputGroup input,
+        .inputSection .inputGroup select{
+            width: 90%;
+        }
+    }
+    @media (max-width: 769px) {
+        .detailsPage{
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .inputSection{
+            width: 100%;
+        }
+        .inputSection .inputGroup input,
+        .inputSection .inputGroup select{
+            width: 100%;
+        }
     }
 </style>

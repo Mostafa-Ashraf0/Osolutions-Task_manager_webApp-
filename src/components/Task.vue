@@ -28,6 +28,7 @@
             description: props.description,
             completed: props.completed,
             img: props.img,
+            date: props.date,
             categoryId: props.categoryId,
             categoryColor: props.categoryColor,
             categoryName: props.categoryName,
@@ -36,17 +37,23 @@
             updated: props.updated
         }
         // store data in states
-        console.log(data)
         detailsStore.taskData = data;
         editFormStore.editFormData = data;
     }
     
     const expandIcon = new URL('@/assets/images/expand.png', import.meta.url).href;
+    const dateIcon = new URL('@/assets/images/date.png', import.meta.url).href;
     const priorityImg = {
         high: new URL('@/assets/images/redIcon.png', import.meta.url).href,
         medium: new URL('@/assets/images/blueIcon.png', import.meta.url).href,
         low: new URL('@/assets/images/yellowIcon.png', import.meta.url).href
     }
+    const formatDate = (isoString) => {
+        const date = new Date(isoString);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        return `${day}/${month}`;
+        };
 </script>
 
 <template>
@@ -70,6 +77,7 @@
                 <span v-if="!completed" style="background-color: #6c757d;">pending</span>
                 <img class="priorityIcon" :src="priorityImg[priority]" alt="img">
                 <img class="taskImg" alt="img" :src="img">
+                
             </div>
             
         </div>
@@ -137,7 +145,7 @@
         gap: 10px;
     }
     .tags span{
-        background-color: #0013FE;
+        background-color: #1D2D35;
         color: white;
         padding: 4px 12px;
         border-radius: 5px;
@@ -160,5 +168,16 @@
         object-fit: cover;
         border-radius: 50%;
     }
-
+    /*tablet view */
+    @media (min-width: 770px) and (max-width: 992px) {
+        .task{
+            width: calc(50% - 10px);
+        }
+    }
+    /*mobile view */
+    @media (max-width: 769px) {
+        .task{
+            width: calc(100%);
+        }
+    }
 </style>
