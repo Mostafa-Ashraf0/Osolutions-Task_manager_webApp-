@@ -2,7 +2,9 @@
     import { computed,ref } from 'vue';
     import Task from './Task.vue';
     import { UseTaskStore } from '@/stores/task';
+    import { useAddForm } from '@/stores/addForm';
     //data store
+    const addFormStore = useAddForm();
     const taskStore = UseTaskStore();
     const allTasks = computed(()=>{
         return taskStore.tasks;
@@ -11,6 +13,9 @@
         return taskStore.categories;
     })
     const categoryFilter = ref("");
+    const handeAdd = ()=>{
+        addFormStore.formDisplay = !addFormStore.formDisplay;
+    }
 </script>
 
 <template>
@@ -20,6 +25,7 @@
             <option value="">All</option>
             <option v-for="c in allCategories.value" :value="c.id">{{ c.name }}</option>
         </select>
+        <button @click="handeAdd">Add</button>
         <span>{{ categoryFilter }}</span>
         <div v-if="categoryFilter" class="taskList">
             <Task v-for="(task, index) in allTasks.value.filter(t=>t.category_id === categoryFilter)" 

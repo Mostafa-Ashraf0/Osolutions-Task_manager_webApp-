@@ -1,5 +1,6 @@
 <script setup>
     import { useEditForm } from '@/stores/editForm';
+    import { useAddForm } from '@/stores/addForm';
     import { useDetailsStore } from '@/stores/taskDetails';
     import { UseTaskStore } from '@/stores/task';
     import { getTasks } from '@/Api/getTasks';
@@ -7,27 +8,27 @@
 
     const taskStore = UseTaskStore();
     const editFormStore = useEditForm();
+    const addFormStore = useAddForm();
     const detailsStore = useDetailsStore();
 
     const allCategories = computed(()=>{
         return taskStore.categories;
     })
     const taskData = computed(()=>{
-        return editFormStore.editFormData;
+        return addFormStore.addFormData;
     })
     const closeIcon = new URL('@/assets/images/close.jpg', import.meta.url).href;
     const closePage = ()=>{
-        editFormStore.formDisplay = !editFormStore.formDisplay
+        addFormStore.formDisplay = !addFormStore.formDisplay;
     }
     const handleCancel = ()=>{
-        detailsStore.display = !detailsStore.display;
-        editFormStore.formDisplay = !editFormStore.formDisplay;
+        addFormStore.formDisplay = !addFormStore.formDisplay;
     }
-    const handleSave = async()=>{
-        const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks?id=eq.${taskData.value.id}`
+    const handleAdd = async()=>{
+        const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks`
         try{
         const res = await fetch(baseUrl,{
-            method: 'PATCH',
+            method: 'POST',
             headers:{
                 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
                 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -37,17 +38,24 @@
             body: JSON.stringify({
                 title: taskData.value.title,
                 category_id: taskData.value.categoryId,
-                priority: taskData.value.priority,
-                description: taskData.value.description,
-                image_url: taskData.value.img
+                priority: taskData.value.priority||null,
+                description: taskData.value.description||null,
+                image_url: taskData.value.img||null
             })
             }
             );
             const data = await res.json();
-            console.log("updated",data)
+            console.log("added",data)
             const fetchedTasks = await getTasks();
+            addFormStore.addFormData = {
+                title: "",
+                categoryId: "",
+                priority: "",
+                description: "",
+                img: ""
+            }
             taskStore.tasks.value = fetchedTasks;
-            editFormStore.formDisplay = !editFormStore.formDisplay;
+            addFormStore.formDisplay = !addFormStore.formDisplay;
             return data;
             
         }catch(error){
@@ -59,24 +67,24 @@
 </script>
 
 <template>
-    <div class="detailsPage" :style="{display:editFormStore.formDisplay?'flex':'none'}">
+    <form class="detailsPage" @submit.prevent="handleAdd" :style="{display:addFormStore.formDisplay?'flex':'none'}">
         <div class="closeIcon" @click="closePage">
             <img class="close" :src="closeIcon" alt="icon"></img>
         </div>
-        <div v-if="taskData" class="inputSection">
+        <div class="inputSection">
             <div class="inputGroup">
                 <label for="title">Title</label>
-                <input type="text" v-model="editFormStore.editFormData.title" required>
+                <input type="text" v-model="addFormStore.addFormData.title" required>
             </div>
             <div class="inputGroup">
                 <label for="category">Category</label>
-                <select name="category" v-model="editFormStore.editFormData.categoryId">
+                <select name="category" v-model="addFormStore.addFormData.categoryId" required>
                     <option v-for="c in allCategories.value" :value="c.id">{{ c.name }}</option>
                 </select>
             </div>
             <div class="inputGroup">
                 <label for="priority">Priority</label>
-                <select name="priority" v-model="editFormStore.editFormData.priority">
+                <select name="priority" v-model="addFormStore.addFormData.priority">
                     <option value="high">high</option>
                     <option value="medium">medium</option>
                     <option value="low">low</option>
@@ -84,21 +92,21 @@
             </div>
 
         </div>
-        <div v-if="taskData" class="inputSection">
+        <div class="inputSection">
             <div class="inputGroup">
                 <label for="description">Description</label>
-                <textarea name="description" v-model="editFormStore.editFormData.description"></textarea>
+                <textarea name="description" v-model="addFormStore.addFormData.description"></textarea>
             </div>
             <div class="inputGroup">
                 <label for="imgUrl">ImgUrl</label>
-                <input type="text" v-model="editFormStore.editFormData.img">
+                <input type="text" v-model="addFormStore.addFormData.img">
             </div>
             <div class="btns">
-                <button class="save" @click="handleSave">Save</button>
-                <button class="cancel" @click="handleCancel">Cancel</button>
+                <button class="save" type="submit">Add</button>
+                <button class="cancel" type="button" @click="handleCancel">Cancel</button>
             </div>
         </div>
-    </div>
+    </form>
 </template>
 
 <style scoped>
