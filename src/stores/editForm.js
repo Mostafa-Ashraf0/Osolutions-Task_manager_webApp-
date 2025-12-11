@@ -4,5 +4,6 @@ import { defineStore } from 'pinia'
 export const useEditForm = defineStore('editform', () => {
   const formDisplay = ref(false);
   const editFormData = ref(null);
-  return {formDisplay,editFormData}
+  const loading = ref(false);
+  return {formDisplay,editFormData,loading}
 })

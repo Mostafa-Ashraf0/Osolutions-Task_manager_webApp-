@@ -16,6 +16,7 @@
     const handeAdd = ()=>{
         addFormStore.formDisplay = !addFormStore.formDisplay;
     }
+    const loadingIcon = new URL('@/assets/images/loading.png', import.meta.url).href;
 </script>
 
 <template>
@@ -27,6 +28,10 @@
         </select>
         <button @click="handeAdd">Add</button>
         <span>{{ categoryFilter }}</span>
+        <div class="loading" v-if="taskStore.loading">
+            <img class="loadingImg" :src="loadingIcon" alt=""></img>
+            <span>Loading...</span>
+        </div>
         <div v-if="categoryFilter" class="taskList">
             <Task v-for="(task, index) in allTasks.value.filter(t=>t.category_id === categoryFilter)" 
             :key="task.id" 
@@ -81,5 +86,23 @@
     }
     .main h2{
         margin: 0 0 15px;
+    }
+    
+    .loading{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    .loading .loadingImg{
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
     }
 </style>

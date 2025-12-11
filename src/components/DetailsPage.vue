@@ -1,8 +1,11 @@
 <script setup>
+    import toastr from 'toastr';
+    import "toastr/build/toastr.min.css";
     import { useDetailsStore } from '@/stores/taskDetails';
     import { UseTaskStore } from '@/stores/task';
     import { computed } from 'vue';
     import { useEditForm } from '@/stores/editForm';
+    import { deleteTask } from '@/Api/deleteTask';
 
     const editFormStore = useEditForm();
     const taskStore = UseTaskStore();
@@ -19,6 +22,7 @@
     const toggleStatus = async()=>{
         const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks?id=eq.${taskData.value.id}`
         try{
+        detailsStore.loading = true;
         const res = await fetch(baseUrl,{
             method: 'PATCH',
             headers:{
@@ -42,15 +46,23 @@
             return data;
             
         }catch(error){
-            alert(error);
+            detailsStore.loading = false;
+            toastr.error(error);
         }finally{
+            detailsStore.loading = false;
             console.log("fetched")
+            toastr.success("Status edited");
         }
     }
     const handleEdit = ()=>{
         detailsStore.display = !detailsStore.display;
         editFormStore.formDisplay = !editFormStore.formDisplay;
     }
+    const handleDelete = async()=>{
+        await deleteTask(taskData.value.id);
+        detailsStore.display = !detailsStore.display
+    }
+    const loadingIcon = new URL('@/assets/images/loading.png', import.meta.url).href;
 </script>
 
 <template>
@@ -58,7 +70,11 @@
         <div class="closeIcon" @click="closePage">
             <img class="close" :src="closeIcon" alt="icon"></img>
         </div>
-        <div class="inputSection">
+        <div class="loading" v-if="detailsStore.loading">
+            <img class="loadingImg" :src="loadingIcon" alt=""></img>
+            <span>loading...</span>
+        </div>
+        <div class="inputSection" :style="{ display: detailsStore.loading ? 'none' : 'flex' }">
             <div class="inputGroup">
                 <label for="title">Title</label>
                 <input type="text" :value="taskData?.title" readonly>
@@ -83,7 +99,7 @@
              >change to completed</span>
 
         </div>
-        <div class="inputSection">
+        <div class="inputSection" :style="{ display: detailsStore.loading ? 'none' : 'flex' }">
             <div class="inputGroup">
                 <label for="description">Description</label>
                 <textarea name="description" :value="taskData?.description" readonly></textarea>
@@ -91,7 +107,7 @@
             <img class="taskImg" :src="taskData?.img" alt="image">
             <div class="btns">
                 <button class="edit" @click="handleEdit">Edit</button>
-                <button class="delete">Delete</button>
+                <button class="delete" @click="handleDelete">Delete</button>
             </div>
         </div>
     </div>
@@ -202,5 +218,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .loading{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    .loading .loadingImg{
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
     }
 </style>

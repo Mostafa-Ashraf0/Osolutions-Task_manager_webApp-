@@ -4,5 +4,6 @@ import { defineStore } from 'pinia'
 export const useDetailsStore = defineStore('taskDetails', () => {
   const display = ref(false);
   const taskData = ref(null);
-  return {display, taskData}
+  const loading = ref(false);
+  return {display, taskData, loading}
 })

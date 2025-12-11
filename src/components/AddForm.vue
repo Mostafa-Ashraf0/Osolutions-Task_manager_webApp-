@@ -1,4 +1,6 @@
 <script setup>
+    import toastr from 'toastr';
+    import "toastr/build/toastr.min.css";
     import { useEditForm } from '@/stores/editForm';
     import { useAddForm } from '@/stores/addForm';
     import { useDetailsStore } from '@/stores/taskDetails';
@@ -27,6 +29,7 @@
     const handleAdd = async()=>{
         const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks`
         try{
+        addFormStore.loading = true;
         const res = await fetch(baseUrl,{
             method: 'POST',
             headers:{
@@ -59,11 +62,14 @@
             return data;
             
         }catch(error){
-            alert(error);
+            addFormStore.loading = false;
+            toastr.error("failed to add task")
         }finally{
-            console.log("fetched")
+            addFormStore.loading = false;
+            toastr.success("Task Added successfuly")
         }
     }
+    const loadingIcon = new URL('@/assets/images/loading.png', import.meta.url).href;
 </script>
 
 <template>
@@ -71,7 +77,11 @@
         <div class="closeIcon" @click="closePage">
             <img class="close" :src="closeIcon" alt="icon"></img>
         </div>
-        <div class="inputSection">
+        <div class="loading" v-if="addFormStore.loading">
+            <img class="loadingImg" :src="loadingIcon" alt=""></img>
+            <span>loading...</span>
+        </div>
+        <div class="inputSection" :style="{ display: addFormStore.loading ? 'none' : 'flex' }">
             <div class="inputGroup">
                 <label for="title">Title</label>
                 <input type="text" v-model="addFormStore.addFormData.title" required>
@@ -92,7 +102,7 @@
             </div>
 
         </div>
-        <div class="inputSection">
+        <div class="inputSection" :style="{ display: addFormStore.loading ? 'none' : 'flex' }">
             <div class="inputGroup">
                 <label for="description">Description</label>
                 <textarea name="description" v-model="addFormStore.addFormData.description"></textarea>
@@ -205,5 +215,21 @@
     .btns .cancel{
         background-color: #ef4444;
     }
-    
+    .loading{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    .loading .loadingImg{
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+    }
 </style>

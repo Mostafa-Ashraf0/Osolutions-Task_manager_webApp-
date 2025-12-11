@@ -4,6 +4,8 @@
     import { UseTaskStore } from '@/stores/task';
     import { getTasks } from '@/Api/getTasks';
     import { computed } from 'vue';
+    import toastr from 'toastr';
+    import "toastr/build/toastr.min.css";
 
     const taskStore = UseTaskStore();
     const editFormStore = useEditForm();
@@ -26,6 +28,7 @@
     const handleSave = async()=>{
         const baseUrl = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/tasks?id=eq.${taskData.value.id}`
         try{
+        editFormStore.loading = true;
         const res = await fetch(baseUrl,{
             method: 'PATCH',
             headers:{
@@ -51,11 +54,14 @@
             return data;
             
         }catch(error){
-            alert(error);
+            editFormStore.loading = false;
+            toastr.error(error);
         }finally{
-            console.log("fetched")
+            editFormStore.loading = false;
+            toastr.success("Task edited")
         }
     }
+    const loadingIcon = new URL('@/assets/images/loading.png', import.meta.url).href;
 </script>
 
 <template>
@@ -63,7 +69,11 @@
         <div class="closeIcon" @click="closePage">
             <img class="close" :src="closeIcon" alt="icon"></img>
         </div>
-        <div v-if="taskData" class="inputSection">
+        <div class="loading" v-if="editFormStore.loading">
+            <img class="loadingImg" :src="loadingIcon" alt=""></img>
+            <span>Editing...</span>
+        </div>
+        <div v-if="taskData" class="inputSection" :style="{ display: editFormStore.loading ? 'none' : 'flex' }">
             <div class="inputGroup">
                 <label for="title">Title</label>
                 <input type="text" v-model="editFormStore.editFormData.title" required>
@@ -84,7 +94,7 @@
             </div>
 
         </div>
-        <div v-if="taskData" class="inputSection">
+        <div v-if="taskData" class="inputSection" :style="{ display: editFormStore.loading ? 'none' : 'flex' }">
             <div class="inputGroup">
                 <label for="description">Description</label>
                 <textarea name="description" v-model="editFormStore.editFormData.description"></textarea>
@@ -197,5 +207,21 @@
     .btns .cancel{
         background-color: #ef4444;
     }
-    
+    .loading{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    .loading .loadingImg{
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+    }
 </style>

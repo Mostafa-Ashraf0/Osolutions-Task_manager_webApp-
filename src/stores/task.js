@@ -4,5 +4,6 @@ import { defineStore } from 'pinia'
 export const UseTaskStore = defineStore('task', () => {
   const tasks = ref([]);
   const categories = ref([]);
-  return {categories, tasks}
+  const loading = ref(false);
+  return {categories, tasks, loading}
 })

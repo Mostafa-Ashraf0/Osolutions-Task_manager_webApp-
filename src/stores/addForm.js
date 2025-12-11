@@ -10,5 +10,6 @@ export const useAddForm = defineStore('addForm', () => {
                 description: "",
                 img: ""
             });
-  return {formDisplay, addFormData}
+  const loading = ref(false);
+  return {formDisplay, addFormData, loading}
 })
