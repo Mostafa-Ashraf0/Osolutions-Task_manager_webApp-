@@ -3,6 +3,10 @@
 ## Description
 simple task manager created with vite + vue.js and Supabase
 
+
+## Live Demo
+https://osolutions-task-manager-web-app.vercel.app/
+
 ## Features
 - Display tasks data as a list with main info in each task card.
 - Filter tasks by category
