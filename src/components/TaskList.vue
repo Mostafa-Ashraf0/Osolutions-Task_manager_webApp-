@@ -51,6 +51,7 @@
         <div v-if="categoryFilter" class="taskList">
             <Task v-for="(task, index) in allTasks.value.filter(t=>t.category_id === categoryFilter)" 
             :key="task.id" 
+            :id="task.id"
             :title="task.title"
             :completed="task.completed"
             :date="task.created_at"
